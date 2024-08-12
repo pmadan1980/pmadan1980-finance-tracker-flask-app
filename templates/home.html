@@ -38,7 +38,7 @@
     }
 
     h1, h2, h3, label {
-        color:white;;
+        color: white;
     }
 
     .navbar {
@@ -92,6 +92,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" href="/"><b>Home</b></a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout"><b>Logout</b></a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -126,13 +129,13 @@
                     <td><b>Amount</b></td>
                     <td><b>Action</b></td>
                 </tr>
-                {% if l %}
-                {% for i in range(l) %}
+                {% if expenselist %}
+                {% for expense in expenselist %}
                 <tr>
-                    <td>{{ i+1 }}</td>
-                    <td>{{ expenselist[i].split(' - ')[0] }}</td>
-                    <td>${{ expenselist[i].split(' - ')[1].strip() }}</td>
-                    <td><a href="/delexpense?delexpenseid={{i}}"><button type='submit'
+                    <td>{{ loop.index }}</td>
+                    <td>{{ expense.description }}</td>
+                    <td>${{ expense.amount }}</td>
+                    <td><a href="/delexpense?delexpenseid={{expense.id}}"><button type='submit'
                                 class='btn btn-danger'>Delete</button></a></td>
                 </tr>
                 {% endfor %}
@@ -142,27 +145,27 @@
         </div>
 
         <div class="col"
-            style="border-radius: 20px;padding: 0px;background-color:rgba(69,58,104,0.5);margin:0px 10px 10px 10px;height: 400px;">
-            <form action='/addexpense' method="POST" enctype="multipart/form-data">
-                <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Add
-                    New Expense <i class="material-icons">control_point_duplicate</i></h2>
-                <label style="font-size: 20px;"><b>Description*</b></label>
-                <br>
-                <input type="text" id="expense_description" name='expense_description'
-                    style="font-size: 20px;margin-top:10px;margin-bottom:10px;background-color:#1a1b26;color: #a9b1d6;" required>
-                <br>
-                <label style="font-size: 20px;"><b>Amount*</b></label>
-                <br>
-                <input type="number" step="0.01" id="expense_amount" name='expense_amount'
-                    style="font-size: 20px;margin-top:10px;margin-bottom:10px;background-color:#1a1b26;color: #a9b1d6;" required>
-                <br>
-                <button style="width: 232px;margin-top: 20px;font-size: 20px;" type='submit' class='btn btn-dark'>Add
-                    Expense
-                </button>
-                <br>
+            style="border-radius: 20px;padding: 0px;background-color:rgba(69,58,104,0.5);margin:0px 10px 10px 10px;">
+            <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Add New Expense
+                <i class="material-icons">add_circle</i>
+            </h2>
+            <form action="/" method="POST" style="padding: 15px;">
+
+                <label for="expense_description" style="margin: 15px;font-size: 18px;"><b>Expense Description
+                    </b></label>
+                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;"
+                    type="text" id="expense_description" name="expense_description" required><br>
+
+                <label for="expense_amount" style="margin: 15px;font-size: 18px;"><b>Amount
+                    </b></label>
+                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;"
+                    type="number" id="expense_amount" name="expense_amount" required><br>
+
+                <button style="font-size: 24px;font-weight: bold;border-radius: 10px;width: 250px;margin-bottom: 10px;"
+                    type='submit' class='btn btn-dark'>Add to List</button>
+
             </form>
         </div>
-
     </div>
 
     <script type="text/javascript">
