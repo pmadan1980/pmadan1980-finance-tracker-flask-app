@@ -7,20 +7,26 @@ app.config['SECRET_KEY'] = 's3cr3t!k3y#1234567890abcdef'  # Replace with a secur
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///expenses.db'
 db = SQLAlchemy(app)
 
-# User model
+# Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     expenses = db.relationship('Expense', backref='user', lazy=True)
 
-# Expense model
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    expenses = db.relationship('Expense', backref='category', lazy=True)
+
 class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     description = db.Column(db.String(200), nullable=False)
     amount = db.Column(db.Float, nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('category.id'), nullable=False)
 
+# Routes
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -38,23 +44,20 @@ def login():
 def register():
     if request.method == 'POST':
         username = request.form['username']
-        # Hash the password using scrypt
         password = generate_password_hash(request.form['password'], method='scrypt')
 
-        # Check if the user already exists
         user_exists = User.query.filter_by(username=username).first()
 
         if user_exists:
             flash('Username already exists!')
             return redirect(url_for('login'))
 
-        # Create a new user and add to the database
         new_user = User(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
 
         flash('Registration successful! Please log in.')
-        return redirect(url_for('login'))
+        return redirect('/login')
 
     return render_template('register.html')
 
@@ -69,18 +72,19 @@ def home():
         return redirect(url_for('login'))
     
     user_id = session['user_id']
-    user = User.query.filter_by(id=user_id).first()
     expenses = Expense.query.filter_by(user_id=user_id).all()
+    categories = Category.query.all()
 
     if request.method == 'POST':
         description = request.form['expense_description']
         amount = request.form['expense_amount']
-        new_expense = Expense(description=description, amount=amount, user_id=user_id)
+        category_id = request.form['expense_category']
+        new_expense = Expense(description=description, amount=amount, user_id=user_id, category_id=category_id)
         db.session.add(new_expense)
         db.session.commit()
         return redirect(url_for('home'))
     
-    return render_template('home.html', expenselist=expenses, datetoday2='Today')
+    return render_template('home.html', expenselist=expenses, datetoday2='Today', categories=categories)
 
 @app.route('/delexpense')
 def delexpense():
@@ -107,7 +111,27 @@ def clear():
     
     return redirect(url_for('home'))
 
+@app.route('/addcategory', methods=['POST'])
+def add_category():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    category_name = request.form['category_name']
+    
+    existing_category = Category.query.filter_by(name=category_name).first()
+    
+    if existing_category:
+        flash('Category already exists!')
+    else:
+        new_category = Category(name=category_name)
+        db.session.add(new_category)
+        db.session.commit()
+        flash('Category added successfully!')
+    
+    return redirect(url_for('home'))
+
+# Initialize the database
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all()  # Create the database tables
+        db.create_all()  # Create the database tables if they don't exist
     app.run(debug=True)
