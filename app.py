@@ -46,7 +46,7 @@ def register():
 
         if user_exists:
             flash('Username already exists!')
-            return redirect(url_for('register'))
+            return redirect(url_for('login'))
 
         # Create a new user and add to the database
         new_user = User(username=username, password=password)

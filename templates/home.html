@@ -1,69 +1,6 @@
 <!doctype html>
 <html lang="en">
 
-<style type='text/css'>
-    * {
-        padding: 0;
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-        background-color: #1a1b26 !important;
-        font-family: sans-serif;
-        margin-top: 40px;
-        height: 100vh;
-        padding: 0;
-        margin: 0;
-    }
-
-    table {
-        border: 1px solid #453a68;
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 86%;
-        margin: auto;
-        background-color: #1a1b26;
-    }
-
-    td,
-    th {
-        border: 1px solid #453a68;
-        padding: 8px;
-        color: #f0eaff;
-    }
-
-    tr:nth-child(even) {
-        background-color: #2e2947;
-    }
-
-    h1, h2, h3, label {
-        color: white;
-    }
-
-    .navbar {
-        background-color: #322c52;
-    }
-
-    .btn-dark {
-        background-color: #453a68;
-        border-color: #453a68;
-    }
-
-    .btn-danger {
-        background-color: #833c5c;
-        border-color: #833c5c;
-    }
-
-    input[type="text"],
-    input[type="number"] {
-        background-color: #1a1b26;
-        color: #a9b1d6;
-        border: 1px solid #453a68;
-    }
-
-</style>
-
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -75,10 +12,75 @@
         integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
 
     <title>Personal Expense Tracker</title>
+    <style type='text/css'>
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1a1b26 !important;
+            font-family: 'Poppins';
+            margin-top: 40px;
+            height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border: 1px solid #453a68;
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 86%;
+            margin: auto;
+            background-color: #1a1b26;
+        }
+
+        td, th {
+            border: 1px solid #453a68;
+            padding: 8px;
+            color: #f0eaff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #2e2947;
+        }
+
+        h1, h2, h3, label {
+            color: white;
+        }
+
+        .navbar {
+            background-color: #322c52;
+        }
+
+        .btn-dark {
+            background-color: #453a68;
+            border-color: #453a68;
+        }
+
+        .btn-danger {
+            background-color: #833c5c;
+            border-color: #833c5c;
+        }
+
+        input[type="text"], input[type="number"] {
+            background-color: #1a1b26;
+            color: #a9b1d6;
+            border: 1px solid #453a68;
+        }
+
+        select {
+            background-color: #1a1b26;
+            color: #a9b1d6;
+            border: 1px solid #453a68;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 
 <body>
-
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Expense Tracker</a>
@@ -113,11 +115,9 @@
     {% endif %}
 
     <div class="row text-center" style="padding: 20px;margin: 20px;">
-
         <div class="col"
             style="border-radius: 20px;padding: 0px;background-color:rgba(69,58,104,0.5);margin:0px 10px 10px 10px;min-height: 400px;">
-            <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Expense
-                List <i class="material-icons">attach_money</i></h2>
+            <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Expense List <i class="material-icons">attach_money</i></h2>
             <a style="text-decoration: none;max-width: 300px;" href="/clear">
                 <button style="font-size: 24px;font-weight: bold;border-radius: 10px;width: 250px;margin-bottom: 10px;"
                     type='submit' class='btn btn-danger'>Clear List</button>
@@ -127,6 +127,7 @@
                     <td><b>S No</b></td>
                     <td><b>Description</b></td>
                     <td><b>Amount</b></td>
+                    <td><b>Category</b></td>
                     <td><b>Action</b></td>
                 </tr>
                 {% if expenselist %}
@@ -135,49 +136,78 @@
                     <td>{{ loop.index }}</td>
                     <td>{{ expense.description }}</td>
                     <td>${{ expense.amount }}</td>
-                    <td><a href="/delexpense?delexpenseid={{expense.id}}"><button type='submit'
-                                class='btn btn-danger'>Delete</button></a></td>
+                    <td>{{ expense.category.name }}</td>
+                    <td><a href="/delexpense?delexpenseid={{expense.id}}"><button type='submit' class='btn btn-danger'>Delete</button></a></td>
                 </tr>
                 {% endfor %}
                 {% endif %}
             </table>
-
         </div>
 
         <div class="col"
             style="border-radius: 20px;padding: 0px;background-color:rgba(69,58,104,0.5);margin:0px 10px 10px 10px;">
-            <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Add New Expense
-                <i class="material-icons">add_circle</i>
-            </h2>
+            <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Add New Expense <i class="material-icons">add_circle</i></h2>
             <form action="/" method="POST" style="padding: 15px;">
+                <label for="expense_description" style="margin: 15px;font-size: 18px;"><b>Expense Description</b></label>
+                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;" type="text" id="expense_description" name="expense_description" required><br>
 
-                <label for="expense_description" style="margin: 15px;font-size: 18px;"><b>Expense Description
-                    </b></label>
-                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;"
-                    type="text" id="expense_description" name="expense_description" required><br>
+                <label for="expense_amount" style="margin: 15px;font-size: 18px;"><b>Amount</b></label>
+                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;" type="number" id="expense_amount" name="expense_amount" required><br>
 
-                <label for="expense_amount" style="margin: 15px;font-size: 18px;"><b>Amount
-                    </b></label>
-                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;"
-                    type="number" id="expense_amount" name="expense_amount" required><br>
+                <label for="expense_category" style="margin: 15px;font-size: 18px;"><b>Category</b></label>
+                <select id="expense_category" name="expense_category" required style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;">
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select><br>
 
-                <button style="font-size: 24px;font-weight: bold;border-radius: 10px;width: 250px;margin-bottom: 10px;"
-                    type='submit' class='btn btn-dark'>Add to List</button>
+                <button style="font-size: 24px;font-weight: bold;border-radius: 10px;width: 250px;margin-bottom: 10px;" type='submit' class='btn btn-dark'>Add to List</button>
+            </form>
+        </div>
+        
+        <div class="col"
+            style="border-radius: 20px;padding: 0px;background-color:rgba(69,58,104,0.5);margin:0px 10px 10px 10px;">
+            <h2 style="border-radius: 20px 20px 0px 0px;background-color: #453a68;padding: 10px;">Add New Category <i class="material-icons">category</i></h2>
+            <form action="/addcategory" method="POST" style="padding: 15px;">
+                <label for="category_name" style="margin: 15px;font-size: 18px;"><b>Category Name</b></label>
+                <input style="font-size: 16px;border-radius: 10px;margin-bottom: 10px;min-width: 300px;" type="text" id="category_name" name="category_name" required><br>
 
+                <button style="font-size: 24px;font-weight: bold;border-radius: 10px;width: 250px;margin-bottom: 10px;" type='submit' class='btn btn-dark'>Add Category</button>
             </form>
         </div>
     </div>
 
-    <script type="text/javascript">
-        var clockElement = document.getElementById('clock');
+    <script>
+        // Clock Script
+        function showTime() {
+            var date = new Date();
+            var h = date.getHours(); // 0 - 23
+            var m = date.getMinutes(); // 0 - 59
+            var s = date.getSeconds(); // 0 - 59
+            var session = "AM";
 
-        function clock() {
-            clockElement.textContent = new Date().toString().slice(15, 24);
+            if (h == 0) {
+                h = 12;
+            }
+
+            if (h > 12) {
+                h = h - 12;
+                session = "PM";
+            }
+
+            h = (h < 10) ? "0" + h : h;
+            m = (m < 10) ? "0" + m : m;
+            s = (s < 10) ? "0" + s : s;
+
+            var time = h + ":" + m + ":" + s + " " + session;
+            document.getElementById("clock").innerText = time;
+            document.getElementById("clock").textContent = time;
+
+            setTimeout(showTime, 1000);
         }
 
-        setInterval(clock, 1000);
+        showTime();
     </script>
-
 </body>
 
 </html>
