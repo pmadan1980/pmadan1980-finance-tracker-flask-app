@@ -189,9 +189,12 @@
     
     <div class="container chart-container">
         <h2>Expenses by Category</h2>
+        {% if pie_chart_url %}
         <img src="{{ pie_chart_url }}" alt="Expenses Pie Chart">
-    </div>    
-
+        {% else %}
+        <p>No data available</p>
+      {% endif %}
+    </div>   
 
     <script>
         function updateTime() {
