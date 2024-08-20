@@ -148,6 +148,17 @@ def add_category():
     return redirect(url_for('home'))
 
 def generate_pie_chart(labels, values):
+    all_zero = True
+    for i in values:
+        if i != 0:
+            all_zero = False
+            break
+
+    if all_zero:
+        return None
+            
+    # if (labels == [] or values == []):
+    #     return f"data:image/png;base64,"
     # Define your color palette
     colors = ['#bb9af7', '#2ac3de', '#453a68', '#833c5c', '#322c52']
 
@@ -165,6 +176,8 @@ def generate_pie_chart(labels, values):
 
     # Return the base64-encoded image data as a string
     return f"data:image/png;base64,{pie_chart_data}"
+
+
 
 
 # Initialize the database
